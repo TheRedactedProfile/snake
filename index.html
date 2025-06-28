@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Juego de la Serpiente</title>
+
+        <link rel="icon" type="image/png" href="./favcion.png" />
+
+        <meta charset="UTF-8" />
+        <meta
+            name="description"
+            content="¡Juega al clásico Juego de la Serpiente en línea! Disfruta de un juego divertido, adictivo y desafiante construido con HTML, CSS y JavaScript puros. Sin descargas, sin anuncios, solo diversión pura."
+        />
+        <meta
+            name="keywords"
+            content="juego serpiente, serpiente online, serpiente clásico, juego HTML5, juego JavaScript, juego navegador, jugar serpiente, juego retro, juego arcade, juego serpiente gratis"
+        />
+        <meta name="author" content="SMXTREME" />
+
+        <meta property="og:title" content="Juego de la Serpiente" />
+        <meta
+            property="og:description"
+            content="Un clásico Juego de la Serpiente construido con HTML, CSS y JavaScript — sin librerías, sin frameworks, ¡solo diversión pura de front-end!"
+        />
+        <meta property="og:image" content="https://snake-game.shubhammaloo.xyz/favcion.png" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://snake-game.shubhammaloo.xyz" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Juego de la Serpiente" />
+        <meta
+            name="twitter:description"
+            content="Un clásico Juego de la Serpiente construido con HTML, CSS y JavaScript — sin librerías, sin frameworks, ¡solo diversión pura de front-end!"
+        />
+        <meta name="twitter:image" content="https://snake-game.shubhammaloo.xyz/favcion.png" />
+
+        <link rel="stylesheet" href="index.css" />
+    </head>
+    <body>
+        <div class="game-container" id="gameContainer">
+            <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊</div>
+            <h1 class="game-title">🐍 SNAKE-GAME</h1>
+
+            <div class="start-screen" id="startScreen">
+                <p>¡Prepárate para jugar el clásico juego de la Serpiente!</p>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin: 10px 0;">
+                    💡 <strong>Nuevo:</strong> Mantén presionada una flecha para acelerar
+                </p>
+
+                <div class="speed-selector">
+                    <h3>Elige la Dificultad:</h3>
+                    <div class="speed-options">
+                        <div class="speed-option" data-speed="200" onclick="selectSpeed(200)">
+                            Fácil
+                        </div>
+                        <div
+                            class="speed-option selected"
+                            data-speed="150"
+                            onclick="selectSpeed(150)"
+                        >
+                            Medio
+                        </div>
+                        <div class="speed-option" data-speed="100" onclick="selectSpeed(100)">
+                            Difícil
+                        </div>
+                        <div class="speed-option" data-speed="50" onclick="selectSpeed(50)">
+                            Insano
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-btn" onclick="startGame()">COMENZAR JUEGO</button>
+            </div>
+
+            <div id="gameArea" style="display: none">
+                <div class="score">
+                    Puntuación: <span id="score">0</span> | Puntuación Máxima: <span id="highScore">0</span>
+                    <br /><span id="currentDifficulty">Medio</span>
+                </div>
+                <canvas class="game-board" id="gameCanvas"></canvas>
+
+                <div class="controls">
+                    Usa las flechas del teclado para controlar la serpiente<br />
+                    <strong>Mantén presionada una flecha para acelerar</strong><br />
+                    🍎 ¡Come comida para crecer y ganar puntos!
+                </div>
+
+                <div class="mobile-controls" id="mobileControls">
+                    <div class="mobile-btn empty"></div>
+                    <div class="mobile-btn" data-direction="up">▲</div>
+                    <div class="mobile-btn empty"></div>
+                    <div class="mobile-btn" data-direction="left">◄</div>
+                    <div class="mobile-btn empty"></div>
+                    <div class="mobile-btn" data-direction="right">►</div>
+                    <div class="mobile-btn empty"></div>
+                    <div class="mobile-btn" data-direction="down">▼</div>
+                    <div class="mobile-btn empty"></div>
+                </div>
+            </div>
+
+            <div class="game-over" id="gameOver">
+                <h2>¡Juego Terminado!</h2>
+                <p>Puntuación Final: <span id="finalScore">0</span></p>
+
+                <div class="speed-selector">
+                    <h3>Elige la Dificultad:</h3>
+                    <div class="speed-options">
+                        <div class="speed-option" data-speed="200" onclick="selectSpeed(200)">
+                            Fácil
+                        </div>
+                        <div
+                            class="speed-option selected"
+                            data-speed="150"
+                            onclick="selectSpeed(150)"
+                        >
+                            Medio
+                        </div>
+                        <div class="speed-option" data-speed="100" onclick="selectSpeed(100)">
+                            Difícil
+                        </div>
+                        <div class="speed-option" data-speed="50" onclick="selectSpeed(50)">
+                            Insano
+                        </div>
+                    </div>
+                </div>
+
+                <button class="restart-btn" onclick="restartGame()">Jugar de Nuevo</button>
+            </div>
+        </div>
+
+        <script src="index.js"></script>
+    </body>
+</html>
