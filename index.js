@@ -45,6 +45,29 @@ const speedNames = {
 
 let audioContext;
 
+function preventMobileScroll() {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+    
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+    
+    document.addEventListener('touchend', function(e) {
+        if (e.touches.length > 0) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+
 function initAudio() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -652,40 +675,83 @@ function startMobileAcceleration(direction) {
     
     mobileKeyPressed = direction;
     mobileAcceleration = true;
-    currentGameSpeed = baseGameSpeed / accelerationMultiplier;
+    
+    switch (direction) {
+        case 'left':
+            keysPressed.left = true;
+            break;
+        case 'up':
+            keysPressed.up = true;
+            break;
+        case 'right':
+            keysPressed.right = true;
+            break;
+        case 'down':
+            keysPressed.down = true;
+            break;
+    }
+    
     changeDirectionMobile(direction);
 }
 
 function stopMobileAcceleration() {
+    if (mobileKeyPressed) {
+        switch (mobileKeyPressed) {
+            case 'left':
+                keysPressed.left = false;
+                break;
+            case 'up':
+                keysPressed.up = false;
+                break;
+            case 'right':
+                keysPressed.right = false;
+                break;
+            case 'down':
+                keysPressed.down = false;
+                break;
+        }
+    }
+    
     mobileKeyPressed = null;
     mobileAcceleration = false;
-    currentGameSpeed = baseGameSpeed;
 }
 
-document.querySelectorAll('.mobile-btn').forEach(btn => {
+document.querySelectorAll('.mobile-btn[data-direction]').forEach(btn => {
+    const direction = btn.getAttribute('data-direction');
+    
     btn.addEventListener('touchstart', function(e) {
         e.preventDefault();
-        const direction = this.getAttribute('onclick')?.match(/'(\w+)'/)?.[1];
-        if (direction) {
-            startMobileAcceleration(direction);
-        }
-    });
+        e.stopPropagation();
+        startMobileAcceleration(direction);
+    }, { passive: false });
     
     btn.addEventListener('touchend', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         stopMobileAcceleration();
-    });
+    }, { passive: false });
+    
+    btn.addEventListener('touchcancel', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        stopMobileAcceleration();
+    }, { passive: false });
     
     btn.addEventListener('mousedown', function(e) {
         e.preventDefault();
-        const direction = this.getAttribute('onclick')?.match(/'(\w+)'/)?.[1];
-        if (direction) {
-            startMobileAcceleration(direction);
-        }
+        e.stopPropagation();
+        startMobileAcceleration(direction);
     });
     
     btn.addEventListener('mouseup', function(e) {
         e.preventDefault();
+        e.stopPropagation();
+        stopMobileAcceleration();
+    });
+    
+    btn.addEventListener('mouseleave', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         stopMobileAcceleration();
     });
 });
@@ -694,12 +760,19 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 document.addEventListener('touchstart', function (e) {
+    if (e.target.closest('.mobile-btn') || e.target.closest('.speed-option') || e.target.closest('.start-btn') || e.target.closest('.restart-btn') || e.target.closest('.sound-toggle')) {
+        return;
+    }
+    
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-});
+}, { passive: false });
 
 document.addEventListener('touchend', function (e) {
     if (!gameRunning) return;
+    if (e.target.closest('.mobile-btn') || e.target.closest('.speed-option') || e.target.closest('.start-btn') || e.target.closest('.restart-btn') || e.target.closest('.sound-toggle')) {
+        return;
+    }
 
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
@@ -721,7 +794,9 @@ document.addEventListener('touchend', function (e) {
             changeDirectionMobile('up');
         }
     }
-});
+}, { passive: false });
+
+preventMobileScroll();
 
 loadHighScore();
 window.addEventListener('resize', function () {
